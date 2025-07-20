@@ -1,4 +1,4 @@
-package com.example.shoppinglist.presentetion
+package com.example.shoppinglist.presentetion.mainScreen
 
 import androidx.lifecycle.ViewModel
 import com.example.shoppinglist.data.repository.ShopItemRepositoryImpl
@@ -9,7 +9,7 @@ import com.example.shoppinglist.domain.usecase.GetItemByIdUseCase
 import com.example.shoppinglist.domain.usecase.GetShopListUseCase
 import com.example.shoppinglist.domain.usecase.UpdateShopItemUseCase
 
-class ViewModel : ViewModel() {
+open class ViewModel : ViewModel() {
     private val repository = ShopItemRepositoryImpl()
 
     private val createShopItemUseCase = CreateShopItemUseCase(repository)
@@ -28,7 +28,7 @@ class ViewModel : ViewModel() {
         deleteShopItemUseCase.execute(id)
     }
 
-    fun getItemById(id: Int) : ShopItem{
+    fun getItemById(id: Int) : ShopItem {
         return getItemByIdUseCase.execute(id)
     }
 

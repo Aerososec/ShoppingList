@@ -25,11 +25,7 @@ class ShopItemRepositoryImpl : ShopItemRepository {
     override fun updateItem(newItem: ShopItem) {
         val index = shopList.indexOfFirst { it.id == newItem.id }
         if(index != -1){
-          shopList[index].apply {
-              name = newItem.name
-              count = newItem.count
-              enable = newItem.enable
-          }
+          shopList[index] = newItem.copy()
         }
         updateLD()
     }

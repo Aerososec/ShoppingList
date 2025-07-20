@@ -1,24 +1,17 @@
-package com.example.shoppinglist.presentetion
+package com.example.shoppinglist.presentetion.mainScreen
 
-
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.models.ShopItem
 
-class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
-    var shopList = listOf<ShopItem>()
-        set(value){
-            val callback = ShopListDiffCallback(shopList, value)
-            val result = DiffUtil.calculateDiff(callback)
-            result.dispatchUpdatesTo(this)
-            field = value
-        }
+class ShopListAdapter : ListAdapter<ShopItem, ShopListAdapter.ShopItemViewHolder>(
+    ShopItemDiffCallback()
+) {
 
     var shopItemLongClick : ((ShopItem) -> Unit)? = null
     var shopItemClick : ((ShopItem) -> Unit)? = null
@@ -34,7 +27,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        val item = shopList[position]
+        val item = getItem(position)
         holder.productName.text = item.name
         holder.productCount.text = item.count.toString()
         holder.view.setOnLongClickListener {
@@ -47,12 +40,9 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         }
     }
 
-    override fun getItemCount(): Int {
-        return shopList.size
-    }
 
     override fun getItemViewType(position: Int): Int {
-        val item = shopList[position]
+        val item = getItem(position)
         return if(item.enable){
             ENABLE_ITEM
         } else{
