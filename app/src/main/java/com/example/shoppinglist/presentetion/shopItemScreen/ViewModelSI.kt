@@ -1,5 +1,7 @@
 package com.example.shoppinglist.presentetion.shopItemScreen
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.shoppinglist.data.repository.ShopItemRepositoryImpl
 import com.example.shoppinglist.domain.models.ShopItem
@@ -17,28 +19,51 @@ class ViewModelSI : ViewModel() {
 
     var id = 500 // TODO заменить на авто генерацию id
 
+    private val _liveDataInputName = MutableLiveData<Boolean>()
+    val liveDataInputName: LiveData<Boolean>
+        get() = _liveDataInputName
+
+    private val _liveDataInputCount = MutableLiveData<Boolean>()
+    val liveDataInputCount: LiveData<Boolean>
+        get() = _liveDataInputCount
+
+    private val _liveDataShopItem = MutableLiveData<ShopItem>()
+    val liveDataShopItem : LiveData<ShopItem>
+        get() = _liveDataShopItem
+
+    private val _liveDataCloseScreen = MutableLiveData<Unit>()
+    val liveDataCloseScreen : LiveData<Unit>
+        get() = _liveDataCloseScreen
+
     fun createShopItem(inputName: String?, inputCount: String?){
         val name = parseName(inputName)
         val count = parseCount(inputCount)
         if (validateInputName(name) && validateInputCount(count)){
             val item = ShopItem(id++, name, count, true)
             createShopItemUseCase.execute(item)
+            finishWork()
         }
-
     }
 
     fun updateShopItem(inputName: String?, inputCount: String?){
         val name = parseName(inputName)
         val count = parseCount(inputCount)
         if (validateInputName(name) && validateInputCount(count)){
-            val item = ShopItem(id++, name, count, true)
-            updateShopItemUseCase.execute(item)
+            _liveDataShopItem.value?.let {
+                val item = it.copy(name = name, count = count)
+                updateShopItemUseCase.execute(item)
+                finishWork()
+            }
         }
-
     }
 
-    fun getItemById(id: Int) : ShopItem {
-        return getItemByIdUseCase.execute(id)
+    fun finishWork(){
+        _liveDataCloseScreen.value = Unit
+    }
+
+    fun getItemById(id: Int) {
+        val item = getItemByIdUseCase.execute(id)
+        _liveDataShopItem.value = item
     }
 
     private fun parseName(inputName: String?) : String{
@@ -55,12 +80,34 @@ class ViewModelSI : ViewModel() {
     }
 
     private fun validateInputName(name: String) : Boolean{
-        val result = name.isNotBlank() // TODO invalid input error
+        val result = name.isNotBlank()
+        inputNameError(result)
         return result
     }
 
+    private fun inputNameError(result: Boolean){
+        if (!result){
+            _liveDataInputName.value = true
+        }
+    }
+
+    fun resetInputNameError(){
+        _liveDataInputName.value = false
+    }
+
     private fun validateInputCount(count : Int) : Boolean{
-        val result = count > 0 // TODO invalid input error
+        val result = count > 0
+        inputCountError(result)
         return result
+    }
+
+    fun resetInputCountError(){
+        _liveDataInputCount.value = false
+    }
+
+    private fun inputCountError(result: Boolean){
+        if (!result){
+            _liveDataInputCount.value = true
+        }
     }
 }
