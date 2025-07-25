@@ -50,6 +50,7 @@ class ShopItemActivity : AppCompatActivity() {
         viewModel.liveDataCloseScreen.observe(this) {
             finish()
         }*/
+
     }
 
     private fun resetNameError(){
