@@ -5,20 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import com.example.shoppinglist.domain.models.ShopItem
 import com.example.shoppinglist.domain.repository.ShopItemRepository
 
-class ShopItemRepositoryImpl : ShopItemRepository {
+object ShopItemRepositoryImpl : ShopItemRepository {
     private val shopList = mutableListOf<ShopItem>()
     private val shopListLD = MutableLiveData<List<ShopItem>>()
 
     init {
-        for (i in 0..100){
+        for (i in 0..10){
             val flag = if (i % 2 == 0) true else false
             shopList.add(ShopItem(id = i, name = i.toString(), count = i, flag))
         }
-        updateLD()
     }
 
     override fun getShopList(): LiveData<List<ShopItem>> {
-        shopListLD.value = shopList.toList()
+        updateLD()
         return shopListLD
     }
 
@@ -26,6 +25,9 @@ class ShopItemRepositoryImpl : ShopItemRepository {
         val index = shopList.indexOfFirst { it.id == newItem.id }
         if(index != -1){
           shopList[index] = newItem.copy()
+        }
+        else{
+            throw RuntimeException("Unknown id")
         }
         updateLD()
     }
@@ -45,6 +47,6 @@ class ShopItemRepositoryImpl : ShopItemRepository {
     }
 
     private fun updateLD(){
-        shopListLD.value = shopList.toList()
+        shopListLD.postValue(shopList.toList())
     }
 }

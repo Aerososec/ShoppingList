@@ -12,20 +12,20 @@ import kotlin.text.Regex
 
 
 class ViewModelSI : ViewModel() {
-    private val repository = ShopItemRepositoryImpl()
+    private val repository = ShopItemRepositoryImpl
     private val createShopItemUseCase = CreateShopItemUseCase(repository)
     private val updateShopItemUseCase = UpdateShopItemUseCase(repository)
     private val getItemByIdUseCase = GetItemByIdUseCase(repository)
 
     var id = 500 // TODO заменить на авто генерацию id
 
-    private val _liveDataInputName = MutableLiveData<Boolean>()
-    val liveDataInputName: LiveData<Boolean>
-        get() = _liveDataInputName
+    private val _liveDataInputNameError = MutableLiveData<Boolean>()
+    val liveDataInputNameError: LiveData<Boolean>
+        get() = _liveDataInputNameError
 
-    private val _liveDataInputCount = MutableLiveData<Boolean>()
-    val liveDataInputCount: LiveData<Boolean>
-        get() = _liveDataInputCount
+    private val _liveDataInputCountError = MutableLiveData<Boolean>()
+    val liveDataInputCountError: LiveData<Boolean>
+        get() = _liveDataInputCountError
 
     private val _liveDataShopItem = MutableLiveData<ShopItem>()
     val liveDataShopItem : LiveData<ShopItem>
@@ -87,12 +87,12 @@ class ViewModelSI : ViewModel() {
 
     private fun inputNameError(result: Boolean){
         if (!result){
-            _liveDataInputName.value = true
+            _liveDataInputNameError.value = true
         }
     }
 
     fun resetInputNameError(){
-        _liveDataInputName.value = false
+        _liveDataInputNameError.value = false
     }
 
     private fun validateInputCount(count : Int) : Boolean{
@@ -102,12 +102,12 @@ class ViewModelSI : ViewModel() {
     }
 
     fun resetInputCountError(){
-        _liveDataInputCount.value = false
+        _liveDataInputCountError.value = false
     }
 
     private fun inputCountError(result: Boolean){
         if (!result){
-            _liveDataInputCount.value = true
+            _liveDataInputCountError.value = true
         }
     }
 }
