@@ -36,7 +36,7 @@ class ShopItemActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        parseIntent()
+        /*parseIntent()
         val mode = intent.getStringExtra(ACTIVITY_MODE)
         initViews()
         when(mode){
@@ -49,7 +49,7 @@ class ShopItemActivity : AppCompatActivity() {
         inputCountError()
         viewModel.liveDataCloseScreen.observe(this) {
             finish()
-        }
+        }*/
     }
 
     private fun resetNameError(){
