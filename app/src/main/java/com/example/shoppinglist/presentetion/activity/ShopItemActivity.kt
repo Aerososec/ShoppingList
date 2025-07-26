@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.shoppinglist.R
+import com.example.shoppinglist.presentetion.fragment.ShopItemFragment
 import com.example.shoppinglist.presentetion.shopItemScreen.ViewModelSI
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -36,95 +37,13 @@ class ShopItemActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        /*parseIntent()
+        parseIntent()
         val mode = intent.getStringExtra(ACTIVITY_MODE)
-        initViews()
         when(mode){
-            MODE_EDIT -> launchEditMode()
-            MODE_ADD -> launchAddMode()
+            MODE_EDIT -> startFragment(launchEditMode(itemId))
+            MODE_ADD -> startFragment(launchAddMode())
         }
-        resetNameError()
-        resetCountError()
-        inputNameError()
-        inputCountError()
-        viewModel.liveDataCloseScreen.observe(this) {
-            finish()
-        }*/
 
-    }
-
-    private fun resetNameError(){
-        inputName.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(
-                p0: CharSequence?,
-                p1: Int,
-                p2: Int,
-                p3: Int
-            ) {
-
-            }
-
-            override fun onTextChanged(
-                p0: CharSequence?,
-                p1: Int,
-                p2: Int,
-                p3: Int
-            ) {
-                viewModel.resetInputNameError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-
-        })
-    }
-
-    private fun resetCountError(){
-        inputCount.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(
-                p0: CharSequence?,
-                p1: Int,
-                p2: Int,
-                p3: Int
-            ) {
-
-            }
-
-            override fun onTextChanged(
-                p0: CharSequence?,
-                p1: Int,
-                p2: Int,
-                p3: Int
-            ) {
-                viewModel.resetInputCountError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-
-        })
-    }
-
-    private fun inputNameError(){
-        viewModel.liveDataInputNameError.observe(this) {
-            textInputName.error = inputError(it, INPUT_NAME_ERROR)
-        }
-    }
-
-    private fun inputCountError(){
-        viewModel.liveDataInputCountError.observe(this) {
-            textInputCount.error = inputError(it, INPUT_COUNT_ERROR)
-        }
-    }
-
-    private fun inputError(error: Boolean, message: String) : String?{
-        return if(error){
-            message
-        } else{
-            null
-        }
     }
 
     private fun parseIntent(){
@@ -144,29 +63,18 @@ class ShopItemActivity : AppCompatActivity() {
         }
     }
 
-    private fun initViews(){
-        textInputCount = findViewById<TextInputLayout>(R.id.textInputCount)
-        textInputName = findViewById<TextInputLayout>(R.id.textInputName)
-        inputName = findViewById<TextInputEditText>(R.id.forItemName)
-        inputCount = findViewById<TextInputEditText>(R.id.forItemCount)
-        saveBtn = findViewById<Button>(R.id.saveItemInfoBtn)
+    private fun startFragment(fragment: ShopItemFragment){
+        supportFragmentManager.beginTransaction()
+            .add(R.id.main, fragment)
+            .commit()
     }
 
-    private fun launchEditMode(){
-        viewModel.getItemById(itemId)
-        viewModel.liveDataShopItem.observe(this){
-            inputName.setText(it.name)
-            inputCount.setText(it.count.toString())
-        }
-        saveBtn.setOnClickListener {
-            viewModel.updateShopItem(inputName.text.toString(), inputCount.text.toString())
-        }
+    private fun launchAddMode() : ShopItemFragment{
+        return ShopItemFragment.newInstanceAddMode()
     }
 
-    private fun launchAddMode(){
-        saveBtn.setOnClickListener {
-            viewModel.createShopItem(inputName.text.toString(), inputCount.text.toString())
-        }
+    private fun launchEditMode(shopItemId : Int) : ShopItemFragment{
+        return ShopItemFragment.newInstanceEditMode(shopItemId)
     }
 
     companion object{
@@ -174,8 +82,6 @@ class ShopItemActivity : AppCompatActivity() {
         private const val MODE_EDIT = "mode_edit"
         private const val MODE_ADD = "mode_app"
         private const val SHOP_ITEM_ID = "shop_item_id"
-        private const val INPUT_NAME_ERROR = "Input Name Error"
-        private const val INPUT_COUNT_ERROR = "Input Count Error"
 
         fun modeAdd(context: Context) : Intent{
             val intent = Intent(context, ShopItemActivity::class.java)

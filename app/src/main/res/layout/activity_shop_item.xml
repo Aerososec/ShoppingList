@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".presentetion.activity.ShopItemActivity"
-    android:name="com.example.shoppinglist.presentetion.fragment.ShopItemFragment"
     tools:layout="@layout/shop_item_fragment">
 
 </androidx.fragment.app.FragmentContainerView>
