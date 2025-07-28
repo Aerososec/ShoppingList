@@ -7,12 +7,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
 import com.example.shoppinglist.presentetion.activity.ShopItemActivity.Companion.modeAdd
 import com.example.shoppinglist.presentetion.activity.ShopItemActivity.Companion.modeEdit
+import com.example.shoppinglist.presentetion.fragment.ShopItemFragment
 import com.example.shoppinglist.presentetion.mainScreen.ShopListAdapter
 import com.example.shoppinglist.presentetion.mainScreen.ViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -20,6 +23,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class MainActivity : AppCompatActivity() {
     private lateinit var shopListAdapter: ShopListAdapter
     private val viewModel : ViewModel by viewModels()
+    private var shopItemFragmentLand : FragmentContainerView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -29,6 +34,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        shopItemFragmentLand = findViewById<FragmentContainerView>(R.id.forLand)
         setUpRecyclerView()
         viewModel.shopListLD.observe(this) {
             shopListAdapter.submitList(it)
@@ -36,9 +42,22 @@ class MainActivity : AppCompatActivity() {
 
         val addButton = findViewById<FloatingActionButton>(R.id.addItemBtn)
         addButton.setOnClickListener {
-            val intent = modeAdd(this)
-            startActivity(intent)
+            if (shopItemFragmentLand == null) {
+                val intent = modeAdd(this)
+                startActivity(intent)
+            } else {
+                val fragment = ShopItemFragment.newInstanceAddMode()
+                launchFragment(fragment)
+            }
         }
+    }
+
+    private fun launchFragment(fragment : Fragment){
+        supportFragmentManager.popBackStack()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.forLand, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun setUpRecyclerView(){
@@ -59,8 +78,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun shopItemClick(){
         shopListAdapter.shopItemClick = {
-            val intent = modeEdit(this, it.id)
-            startActivity(intent)
+            if (shopItemFragmentLand == null){
+                val intent = modeEdit(this, it.id)
+                startActivity(intent)
+            }
+            else{
+                val fragment = ShopItemFragment.newInstanceEditMode(it.id)
+                launchFragment(fragment)
+            }
         }
     }
 

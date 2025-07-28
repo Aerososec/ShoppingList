@@ -39,10 +39,11 @@ class ShopItemActivity : AppCompatActivity() {
         }
         parseIntent()
         val mode = intent.getStringExtra(ACTIVITY_MODE)
-        when(mode){
-            MODE_EDIT -> startFragment(launchEditMode(itemId))
-            MODE_ADD -> startFragment(launchAddMode())
-        }
+        if (savedInstanceState == null)
+            when(mode){
+                MODE_EDIT -> startFragment(launchEditMode(itemId))
+                MODE_ADD -> startFragment(launchAddMode())
+            }
 
     }
 
@@ -65,7 +66,7 @@ class ShopItemActivity : AppCompatActivity() {
 
     private fun startFragment(fragment: ShopItemFragment){
         supportFragmentManager.beginTransaction()
-            .add(R.id.main, fragment)
+            .replace(R.id.main, fragment)
             .commit()
     }
 
