@@ -1,8 +1,10 @@
 package com.example.shoppinglist.presentetion.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,11 +26,22 @@ class ShopItemFragment : Fragment() {
     private lateinit var saveBtn : Button
     private lateinit var screenMode : String
     private var itemId = -1
+    private lateinit var editFinishListener : EditFinishListener
 
     private var modeScreen : String = "Screen Mode"
     private var shopItemID : Int = -1
 
     private val viewModel : ViewModelSI by viewModels()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is EditFinishListener){
+            editFinishListener = context
+        }
+        else{
+            throw RuntimeException("Context doesn't implement interface: EditFinishListener")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -177,6 +190,10 @@ class ShopItemFragment : Fragment() {
         }
     }
 
+    interface EditFinishListener{
+        fun editFinish()
+    }
+
     companion object{
         private const val ACTIVITY_MODE = "activity_mode"
         private const val MODE_EDIT = "mode_edit"
@@ -201,7 +218,4 @@ class ShopItemFragment : Fragment() {
             }
         }
     }
-
-
-
 }

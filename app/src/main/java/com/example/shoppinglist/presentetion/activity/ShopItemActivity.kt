@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +18,7 @@ import com.example.shoppinglist.presentetion.shopItemScreen.ViewModelSI
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.EditFinishListener {
     private lateinit var textInputCount : TextInputLayout
     private lateinit var textInputName : TextInputLayout
     private lateinit var inputName : TextInputEditText
@@ -76,6 +77,11 @@ class ShopItemActivity : AppCompatActivity() {
 
     private fun launchEditMode(shopItemId : Int) : ShopItemFragment{
         return ShopItemFragment.newInstanceEditMode(shopItemId)
+    }
+
+    override fun editFinish() {
+        Toast.makeText(this, "Success", Toast.LENGTH_LONG).show()
+        supportFragmentManager.popBackStack()
     }
 
     companion object{
