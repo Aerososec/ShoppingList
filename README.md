@@ -22,8 +22,3 @@
 - **Singleton** (репозиторий как `object`)
 - **Delegate** (`by viewModels()` для ViewModel)
 - **Callback** (интерфейсы Fragment ↔ Activity)
-
-## 🎯 Особенности реализации
-```kotlin
-// Пример Clean Architecture
-data <-> domain <-> presentation
